@@ -1,0 +1,18 @@
+
+{% block content %}
+<div class="header">
+    <h1><a href="/books">Каталог</a></h1>
+</div>
+<body>
+{% for c in book %}
+<ul>
+    <li>{{ c.name }}</li>
+    <li>{{ c.author }}</li>
+    <li>{{ c.pub_date }}</li>
+</ul>
+{% endfor %}
+
+
+</body>
+{% endblock %}
+</html>

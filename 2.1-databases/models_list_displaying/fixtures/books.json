@@ -16,5 +16,23 @@
       "author": "Джордж Оруэл",
       "pub_date": "2016-12-06"
     }
+  },
+    {
+    "model": "books.book",
+    "pk": 3,
+    "fields": {
+      "name": "Ведьмак",
+      "author": "Анджей Сапковский",
+      "pub_date": "1995-05-04"
+    }
+  },
+    {
+    "model": "books.book",
+    "pk": 4,
+    "fields": {
+      "name": "Метро 2033",
+      "author": "Д.А. Глуховский",
+      "pub_date": "2002-07-12"
+    }
   }
 ]
