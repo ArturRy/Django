@@ -5,7 +5,7 @@ from articles.models import Article
 
 def articles_list(request):
     template = "articles/news.html"
-    articles = Article.objects.order_by("-published_at")
+    articles = Article.objects.all()
     context = {
         "object_list": articles,
     }
