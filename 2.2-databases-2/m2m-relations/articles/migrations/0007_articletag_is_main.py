@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('articles', '0006_remove_tag_scopes_article_scopes'),
+        ("articles", "0006_remove_tag_scopes_article_scopes"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='articletag',
-            name='is_main',
+            model_name="articletag",
+            name="is_main",
             field=models.BooleanField(default=False),
         ),
     ]

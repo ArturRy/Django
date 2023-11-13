@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('articles', '0005_remove_article_scopes_tag_scopes'),
+        ("articles", "0005_remove_article_scopes_tag_scopes"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='tag',
-            name='scopes',
+            model_name="tag",
+            name="scopes",
         ),
         migrations.AddField(
-            model_name='article',
-            name='scopes',
-            field=models.ManyToManyField(related_name='scopes', to='articles.tag'),
+            model_name="article",
+            name="scopes",
+            field=models.ManyToManyField(related_name="scopes", to="articles.tag"),
         ),
     ]
