@@ -1,10 +1,11 @@
 from rest_framework.test import APIClient
+from rest_framework.exceptions import ValidationError
 import pytest
 from model_bakery import baker
 
 from students.models import Course, Student
 
-
+from students.serializers import CourseSerializer
 
 
 # def test_example():
@@ -20,7 +21,12 @@ def course_factory():
 
     return factory
 
+@pytest.fixture
+def student_factory():
+    def factory(*args, **kwargs):
+        return baker.make(Student, *args, **kwargs)
 
+    return factory
 @pytest.fixture
 def client():
     return APIClient()
@@ -58,11 +64,12 @@ def test_courses_id_filter(client, course_factory):
 @pytest.mark.django_db
 def test_courses_name_filter(client, course_factory):
     courses_name_filter = course_factory(_quantity=10)
-    response = client.get('/api/v1/courses/?name=')
-    if response.status_code == 200:
-        assert len(response.json()) > 0
-        index = response.json()[0]['id'] - 1
-        assert response.json()[0]['name'] == Course.objects.all()[index].name
+    response = client.get(f"/api/v1/courses/?name={courses_name_filter[3].name}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert data[0]["name"] == courses_name_filter[3].name
+
 
 
 @pytest.mark.django_db
@@ -72,20 +79,34 @@ def test_create_course(client, student):
     assert response.status_code == 201
     assert Course.objects.count() == count + 1
 
-
 @pytest.mark.django_db
 def test_update_course(client, course_factory):
-    courses_update = course_factory()
-    response = client.patch('/api/v1/courses/1/', data={'name': 'test_name'})
+    courses_update = course_factory(_quantity=1)
+    response = client.patch(
+        f"/api/v1/courses/{courses_update[0].id}/", data={"name": "test_name"}
+    )
     assert response.status_code == 200
-    assert Course.objects.all()[0].name == 'test_name'
+    assert Course.objects.all()[0].name == "test_name"
+
 
 @pytest.mark.django_db
 def test_delete_courses(client, course_factory):
-    courses_delete = course_factory(_quantity=10)
+    courses_delete = course_factory(_quantity=1)
     count = Course.objects.count()
-    response = client.delete('/api/v1/courses/3/')
+    response = client.delete(f"/api/v1/courses/{courses_delete[0].id}/")
     assert response.status_code == 204
     assert Course.objects.count() == count - 1
 
 
+test_values = [
+    (21, pytest.raises(ValidationError))
+]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("students_count, expected_result", test_values)
+def test_validation(student_factory, students_count, expected_result):
+    students_id = [student.id for student in student_factory(_quantity=students_count)]
+
+    with expected_result:
+        assert CourseSerializer().validate_students(value=students_id)
